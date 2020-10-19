@@ -18,8 +18,8 @@ package v1.models.request.createSEPeriodic
 
 import play.api.libs.json.{Format, Json}
 
-case class AmountObject(amount: BigDecimal, disallowableAmount: Option[BigDecimal])
+case class IncomesAmountObject(amount: BigDecimal)
 
-object AmountObject {
-  implicit val format: Format[AmountObject] = Json.format[AmountObject]
+object IncomesAmountObject {
+  implicit val format: Format[IncomesAmountObject] = Json.format[IncomesAmountObject]
 }
