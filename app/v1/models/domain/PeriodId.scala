@@ -14,22 +14,31 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.domain
 
-import v1.models.domain.PeriodId
-import v1.models.errors.{MtdError, PeriodIdFormatError}
+import v1.controllers.requestParsers.validators.validations.dateFormat
 
 import scala.util.{Failure, Success, Try}
 
-object PeriodIdValidation {
+//noinspection ScalaStyle
+case class PeriodId(value: String) {
+  override def toString: String = value
 
-  def validate(periodId: String): List[MtdError] = {
+  val from: String = value.substring(0, 10)
+  val to: String = value.substring(11, 21)
+
+  assert(value.length == 21)
+  assert(
     Try {
-      PeriodId(periodId)
+      dateFormat.parse(from)
+      dateFormat.parse(to)
     } match {
-      case Success(_) => Nil
-      case Failure(_) => List(PeriodIdFormatError)
+      case Success(_) => true
+      case Failure(_) => false
     }
-  }
+  )
+}
 
+object PeriodId {
+  def fromSeparate(from: String, to: String): PeriodId = PeriodId(s"${from}_$to")
 }

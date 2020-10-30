@@ -18,6 +18,7 @@ package v1.models.response.listSEPeriodic
 
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax._
+import v1.models.domain.PeriodId
 
 case class PeriodDetails(periodId: String, from: String, to: String)
 
@@ -26,7 +27,10 @@ object PeriodDetails {
     implicit val reads: Reads[PeriodDetails] = (
         (JsPath \ "from").read[String] and
         (JsPath \ "to").read[String]
-    ) ((from, to) => PeriodDetails(periodId = "", from = from, to = to))
+    ) ((from, to) => {
+      val periodId = PeriodId.fromSeparate(from, to)
+      PeriodDetails(periodId.toString, periodId.from, periodId.to)
+    })
 
   implicit val writes: OWrites[PeriodDetails] = Json.writes[PeriodDetails]
 }

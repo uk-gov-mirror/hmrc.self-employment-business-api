@@ -22,6 +22,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicRequest
 import v1.models.response.retrieveSEPeriodic.RetrieveSelfEmploymentPeriodicResponse
 import v1.connectors.httpparsers.StandardDesHttpParser._
+import v1.models.domain.PeriodId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,11 +33,10 @@ class RetrieveSelfEmploymentPeriodicConnector @Inject()(val http: HttpClient,
     implicit hc: HeaderCarrier,
     ec: ExecutionContext): Future[DesOutcome[RetrieveSelfEmploymentPeriodicResponse]] = {
 
-    val fromDate = request.periodId.substring(0, 10)
-    val toDate = request.periodId.substring(11, 21)
-
     get(
-      uri = DesUri[RetrieveSelfEmploymentPeriodicResponse](s"income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summary-detail?from=$fromDate&to=$toDate")
+      uri = DesUri[RetrieveSelfEmploymentPeriodicResponse]
+        (s"income-store/nino/${request.nino}/self-employments/${request.businessId}/periodic-summary-detail" +
+          s"?from=${request.periodId.from}&to=${request.periodId.to}")
     )
   }
 }
